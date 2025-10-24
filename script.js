@@ -28,16 +28,22 @@ class Funcionario{
 const funcionarios = [];
 let indiceOperacao = null;
 
-function salvarFuncionario(event){
+const form = document.getElementById('form-funcionarios');
+const tbody = document.getElementById('tbody-funcionarios')
+const inputNome = document.getElementById('nome');
+const inputIdade = document.getElementById('idade');
+const inputCargo = document.getElementById('cargo');
+const inputSalario = document.getElementById('salario');
+const mensagem = document.getElementById('mensagem');
+const btnSalvar = document.getElementById('btn-salvar');
+
+form.addEventListener('submit', (event) =>{
     event.preventDefault();
 
-    const form = document.getElementById('form-funcionarios');
-    const nome = document.getElementById('nome').value;
-    const idade = Number(document.getElementById('idade').value);
-    const cargo = document.getElementById('cargo').value;
-    const salario = Number(document.getElementById('salario').value);
-    const mensagem = document.getElementById('mensagem');
-    const btnSalvar = document.getElementById('btn-salvar');
+    const nome = inputNome.value;
+    const idade = Number(inputIdade.value);
+    const cargo = inputCargo.value;
+    const salario = Number(inputSalario.value);
 
     if (nome.trim() === '' || cargo.trim() === ''){
         mensagem.textContent = 'Nome e cargo são obrigatórios.';
@@ -49,9 +55,9 @@ function salvarFuncionario(event){
         return;
     }
 
-    const funcionario = new Funcionario(nome, idade, cargo, salario);
     
     if(indiceOperacao == null){
+        const funcionario = new Funcionario(nome, idade, cargo, salario);
         funcionarios.push(funcionario);
         mensagem.style.color = 'green';
         mensagem.textContent = 'Funcionário cadastrado com sucesso!';
@@ -69,12 +75,38 @@ function salvarFuncionario(event){
     }
     console.log(funcionarios);
     renderTabela();
-    
     form.reset();
-}
+});
+
+tbody.addEventListener('click', (event) => {
+    const botao = event.target;
+
+    if(botao.classList.contains('btn-excluir')){
+        const index = Number(botao.dataset.index);
+        const func = funcionarios[index];
+        funcionarios.splice(index,1);
+        console.log('Funcionario excluido!');
+        renderTabela();
+    }
+
+    if(botao.classList.contains('btn-editar')){
+        const index = Number(botao.dataset.index);
+        const func = funcionarios[index];
+
+        inputNome.value = func.getNome();
+        inputIdade.value = func.getIdade();
+        inputCargo.value = func.getCargo();
+        inputSalario.value = func.getSalario();
+
+        indiceOperacao = index;
+
+        btnSalvar.textContent = 'Salvar Edição';
+        mensagem.style.color = 'blue';
+        mensagem.textContent = `Editando Funcionário: ${func.nome}`;
+    }
+});
 
 function renderTabela(){
-    const tbody = document.getElementById('tbody-funcionarios');
     tbody.innerHTML = '';
 
     for (let i = 0; i < funcionarios.length; i++){
@@ -82,39 +114,16 @@ function renderTabela(){
         const tr = document.createElement('tr');
 
         tr.innerHTML = `
-            <td>${func.nome}</td>
-            <td>${func.idade}</td>
-            <td>${func.cargo}</td>
-            <td>R$ ${func.salario.toFixed(2)}</td>
+            <td>${func.getNome()}</td>
+            <td>${func.getIdade()}</td>
+            <td>${func.getCargo()}</td>
+            <td>R$ ${func.getSalario().toFixed(2)}</td>
             <td>
-                <button type="button" onclick="editarFuncionario(${i})">Editar</button>
-                <button type="button" onclick="excluirFuncionario(${i})">Excluir</button>
+                <button type="button" class="btn-editar" data-index="${i}">Editar</button>
+                <button type="button" class="btn-excluir" data-index="${i}">Excluir</button>
             </td>
         `;  
 
         tbody.appendChild(tr);
     }
 }
-
-function excluirFuncionario(index){
-    const func = funcionarios[index];
-    funcionarios.splice(index,1);
-    console.log('Funcionario excluido!');
-    renderTabela();
-}
-
-function editarFuncionario(index){
-    const mensagem = document.getElementById('mensagem');
-    const func = funcionarios[index];
-
-    document.getElementById('nome').value = func.nome;
-    document.getElementById('idade').value = func.idade;
-    document.getElementById('cargo').value = func.cargo;
-    document.getElementById('salario').value = func.salario;
-
-    indiceOperacao = index;
-
-    document.getElementById('btn-salvar').textContent = 'Salvar Edição';
-    mensagem.style.color = 'blue';
-    mensagem.textContent = `Editando Funcionário: ${func.nome}`;
-} 
