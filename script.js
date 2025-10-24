@@ -26,6 +26,7 @@ class Funcionario{
 }
 
 const funcionarios = [];
+let indiceOperacao = null;
 
 function salvarFuncionario(event){
     event.preventDefault();
@@ -36,6 +37,7 @@ function salvarFuncionario(event){
     const cargo = document.getElementById('cargo').value;
     const salario = Number(document.getElementById('salario').value);
     const mensagem = document.getElementById('mensagem');
+    const btnSalvar = document.getElementById('btn-salvar');
 
     if (nome.trim() === '' || cargo.trim() === ''){
         mensagem.textContent = 'Nome e cargo são obrigatórios.';
@@ -48,11 +50,23 @@ function salvarFuncionario(event){
     }
 
     const funcionario = new Funcionario(nome, idade, cargo, salario);
-
-    funcionarios.push(funcionario);
-    mensagem.style.color = 'green';
-    mensagem.textContent = 'Funcionário cadastrado com sucesso!';
     
+    if(indiceOperacao == null){
+        funcionarios.push(funcionario);
+        mensagem.style.color = 'green';
+        mensagem.textContent = 'Funcionário cadastrado com sucesso!';
+    }else{
+        const funcionarioEditado =  funcionarios[indiceOperacao];
+        funcionarioEditado.setNome(nome);
+        funcionarioEditado.setIdade(idade);
+        funcionarioEditado.setCargo(cargo);
+        funcionarioEditado.setSalario(salario);
+        
+        mensagem.style.color = 'green';
+        mensagem.textContent = 'Funcionário editado com sucesso!';
+        indiceOperacao = null;
+        btnSalvar.textContent = "Cadastrar";
+    }
     console.log(funcionarios);
     renderTabela();
     
@@ -72,8 +86,35 @@ function renderTabela(){
             <td>${func.idade}</td>
             <td>${func.cargo}</td>
             <td>R$ ${func.salario.toFixed(2)}</td>
-        `;
+            <td>
+                <button type="button" onclick="editarFuncionario(${i})">Editar</button>
+                <button type="button" onclick="excluirFuncionario(${i})">Excluir</button>
+            </td>
+        `;  
 
         tbody.appendChild(tr);
     }
 }
+
+function excluirFuncionario(index){
+    const func = funcionarios[index];
+    funcionarios.splice(index,1);
+    console.log('Funcionario excluido!');
+    renderTabela();
+}
+
+function editarFuncionario(index){
+    const mensagem = document.getElementById('mensagem');
+    const func = funcionarios[index];
+
+    document.getElementById('nome').value = func.nome;
+    document.getElementById('idade').value = func.idade;
+    document.getElementById('cargo').value = func.cargo;
+    document.getElementById('salario').value = func.salario;
+
+    indiceOperacao = index;
+
+    document.getElementById('btn-salvar').textContent = 'Salvar Edição';
+    mensagem.style.color = 'blue';
+    mensagem.textContent = `Editando Funcionário: ${func.nome}`;
+} 
