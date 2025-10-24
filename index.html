@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Funcionários</title>
+</head>
+<body>
+    <h2>Gestão de Funcionários</h2>
+    <hr>
+
+    <form onsubmit="salvarFuncionario(event)" id="form-funcionarios">
+        <label for="nome">Nome:</label><br>
+        <input type="text" id="nome" required placeholder="Digite o nome:"><br>
+
+        <label for="idade">Idade:</label><br>
+        <input type="number" id="idade" required placeholder="Digite a idade:"><br>
+
+        <label for="cargo">Digite o cargo:</label><br>
+        <input type="text" id="cargo" required placeholder="Digite o cargo:"><br>
+
+        <label for="salario">Salário:</label><br>
+        <input type="number" id="salario" required placeholder="Digite o salário:"><br><br>
+
+        <button type="submit" id="btn-salvar">Cadastrar</button><br>
+        <p id="mensagem" style="color:red;"></p><br>
+
+        <table border=".2" cellpadding="8" cellspacing="0">
+            <thead bgcolor="gray" >
+                <tr>
+                    <th width="130">Nome</th>
+                    <th width="130">Idade</th>
+                    <th width="130">Cargo</th>
+                    <th width="130">Salário</th>
+                </tr>
+            </thead>
+            <tbody id="tbody-funcionarios" >
+                
+            </tbody>
+
+        <table></table>
+    </form>
+    <script src="./script.js"></script>
+</body>
+</html>
